@@ -4,7 +4,7 @@ const app = express();
 app.use(express.json());
 
 app.get("/api/users/currentuser", (req, res) => {
-  res.send("Hi there!");
+  res.send("Bye dog there!");
 });
 
 app.use("/api/users", (req, res) => {
@@ -16,6 +16,6 @@ app.use("/", (req, res) => {
 });
 
 app.listen(3000, () => {
-  console.log("Dm          e?");
+  console.log("Dme?");
   console.log("List ening on port 3000");
 });
