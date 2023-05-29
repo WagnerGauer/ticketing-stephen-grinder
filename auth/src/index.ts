@@ -5,6 +5,10 @@ import { signinRouter } from "./routes/signin";
 import { signoutRouter } from "./routes/signout";
 import { signupRouter } from "./routes/signup";
 
+import { errorHandler } from "./middlewares/error-handler";
+
+import { NotFoundError } from "./errors/not-found-error";
+
 const app = express();
 app.use(express.json());
 
@@ -13,17 +17,14 @@ app.use(signinRouter);
 app.use(signoutRouter);
 app.use(signupRouter);
 
-app.use("/", (req, res) => {
-  res.send("No route hit");
+app.all("*", (req, res) => {
+  console.log("this route does not exist in the server");
+  throw new NotFoundError();
 });
-app.get("/", (req, res) => {
-  res.send("No route hit");
-});
-app.post("/", (req, res) => {
-  res.send("No route hit");
-});
+
+app.use(errorHandler);
 
 app.listen(3000, () => {
   console.log("Updated again");
-  console.log("List ening on port 3000");
+  console.log("Listening on port 3000");
 });
