@@ -42,7 +42,9 @@ router.post(
         id: user.id,
         email: user.email,
       },
-      "sdf"
+      process.env.JWT_KEY!
+      // A check to see if this evironment variable defined was already put in place in the start
+      // function in the index.ts file, by putting ! at the end there I can make typescript stop complaining
     );
 
     // Store it on a session object
