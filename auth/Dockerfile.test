@@ -1,0 +1,15 @@
+FROM node:19
+#Please not that here I used node v19, not alpine
+#Alpine is latest light build and there are some missing dependecies
+#And you can use your node version
+USER root
+#By default node uses user node, which has limited access to container
+#And to use mongodb-memory-server we need root access FOR CONTAINER 
+WORKDIR /app
+COPY package.json .
+RUN npm install
+#Please note that npm will install all dependencies, because we need 
+#mongodb-memory-server and other dev dependencies on container installed 
+COPY . .
+ 
+CMD ["npm","run","test"]
