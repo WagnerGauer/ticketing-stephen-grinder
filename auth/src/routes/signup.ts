@@ -21,20 +21,15 @@ router.post(
   async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
-    console.log(`this is the email received to create a user ${email}`);
-
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
       throw new BadRequestError("Email is in use");
     }
 
-    console.log(`Existing user here: ${existingUser}`);
     const user = User.build({ email, password });
-    console.log(`user here: ${user}`);
     await user.save();
 
-    console.log("This is process.env.JWT_KEY " + process.env.JWT_KEY);
     // Generate JWT
     const userJwt = jwt.sign(
       {
@@ -49,8 +44,6 @@ router.post(
     req.session = {
       jwt: userJwt,
     };
-    console.log(req.session);
-    console.log("just before sending the status here");
 
     res.status(201).send(user);
   }
