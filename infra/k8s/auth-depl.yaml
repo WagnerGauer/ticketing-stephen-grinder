@@ -16,6 +16,8 @@ spec:
         - name: auth
           image: wagnergauer/auth
           env:
+            - name: AUTH_MONGO_URI
+              value: "mongodb://auth-mongo-srv:27017/auth"
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
