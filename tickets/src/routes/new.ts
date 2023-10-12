@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { body } from "express-validator";
 import { requireAuth, validateRequest } from "@wagtickets/common/";
+import { Ticket } from "../models/ticket";
 
 const router = express.Router();
 
@@ -14,8 +15,22 @@ router.post(
       .withMessage("Price must be greater than 0"),
   ],
   validateRequest,
-  (req: Request, res: Response) => {
-    res.sendStatus(200);
+  async (req: Request, res: Response) => {
+    const { title, price } = req.body;
+
+    const ticket = Ticket.build({
+      // typescript thinks that the user might not be defined but I can use !
+      // to tell it not worry. The require auth middleware that is being used in this route ensures
+      // that a currentUser is defined, if a currentUser is not define an error is thrown and the
+      // code execution DOES NOT  get here
+      title,
+      price,
+      userId: req.currentUser!.id,
+    });
+
+    await ticket.save();
+
+    res.status(201).send(ticket);
   }
 );
 
