@@ -43,6 +43,14 @@ it("doesn't update the ticket price or title if the user does not own the ticket
     .set("Cookie", global.signin())
     .send({ title: "sdfsdf", price: 32 });
 
+  await request(app)
+    .put(`/api/tickets/${response.body.id}`)
+    .set("Cookie", global.signin())
+    .send({
+      title: "idoi4ed",
+      price: 23,
+    });
+
   const responseFromFollowUpRequest = await request(app)
     .get(`/api/tickets/${response.body.id}`)
     .send();
@@ -72,5 +80,26 @@ it("returns a 400 if the user provides an invalid title or price", async () => {
     .expect(400);
 });
 it("updates the ticket provided valid inputs", async () => {
-  // s
+  const cookie = global.signin();
+
+  const response = await request(app)
+    .post("/api/tickets")
+    .set("Cookie", cookie)
+    .send({ title: "sdfsdf", price: 32 });
+
+  await request(app)
+    .put(`/api/tickets/${response.body.id}`)
+    .set("Cookie", cookie)
+    .send({
+      title: "updated-title",
+      price: 45,
+    })
+    .expect(200);
+
+  const responseFromFollowUpRequest = await request(app)
+    .get(`/api/tickets/${response.body.id}`)
+    .send();
+
+  expect(responseFromFollowUpRequest.body.title).toEqual("updated-title");
+  expect(responseFromFollowUpRequest.body.price).toEqual(45);
 });
