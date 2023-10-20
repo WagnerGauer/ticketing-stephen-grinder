@@ -1,9 +1,25 @@
 import { Message, Stan } from "node-nats-streaming";
+import { Subjects } from "./subjects";
 
-export abstract class Listener {
-  abstract subject: string;
+// This will enforce that the argument type passed to Listener contains a property called
+// subject and its value is of type Subjects which is an enum which so far contains the
+// property TicketCreated and OrderUpdated
+
+// Bottom line:
+// This interface allows me to force the custom type parameter passed to the generic Listener class to
+// contain a property name subject whose value is present in one option in the Subjects enum
+
+// It also says that the property data can be of any type which allows me to anotate the property data
+// however I want in the concrete class implementation
+interface Event {
+  subject: Subjects;
+  data: any;
+}
+
+export abstract class Listener<T extends Event> {
+  abstract subject: T["subject"];
   abstract queueGroupName: string;
-  abstract onMessage(data: any, msg: Message): void;
+  abstract onMessage(data: T["data"], msg: Message): void;
   private client: Stan;
   protected ackWait = 5 * 1000;
 
